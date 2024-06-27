@@ -2,12 +2,14 @@ const board = document.getElementById("game-board");
 const instructionText = document.getElementById("instruction-text");
 const logo = document.getElementById("logo");
 const score = document.getElementById("score");
+const highScoreText = document.getElementById("highScore");
 // Make sure the board is styled as a grid container in your CSS
 // e.g., #game-board { display: grid; grid-template-columns: repeat(20, 1fr); grid-template-rows: repeat(20, 1fr); }
 
 const gridSize = 20;
 let snake = [{ x: 10, y: 10 }];
 let food = generateFood();
+let highScore = 0;
 let direction = "right";
 let gameInterval;
 let gameSpeedDelay = 200;
@@ -40,9 +42,11 @@ function setPosition(element, position) {
 }
 
 function drawFood() {
-  const foodElement = createGameElement("div", "food");
-  setPosition(foodElement, food);
-  board.appendChild(foodElement);
+  if (gameStarted) {
+    const foodElement = createGameElement("div", "food");
+    setPosition(foodElement, food);
+    board.appendChild(foodElement);
+  }
 }
 
 function generateFood() {
@@ -135,6 +139,8 @@ const checkCollision = () => {
 };
 
 const resetGame = () => {
+  updateHighScore();
+  stopGame();
   snake = [{ x: 10, y: 10 }];
   food = generateFood();
   direction = "right";
@@ -145,6 +151,22 @@ const resetGame = () => {
 const updateScore = () => {
   const currentScore = snake.length - 1;
   score.textContent = currentScore.toString().padStart(3, "0");
+};
+
+const stopGame = () => {
+  clearInterval(gameInterval);
+  gameStarted = false;
+  instructionText.style.display = "block";
+  logo.style.display = "block";
+};
+
+const updateHighScore = () => {
+  const currentScore = snake.length - 1;
+  if (currentScore > highScore) {
+    highScore = currentScore;
+    highScoreText.textContent = highScore.toString().padStart(3, "0");
+  }
+  highScoreText.style.display = "block";
 };
 
 document.addEventListener("keydown", handleKeyPress);
