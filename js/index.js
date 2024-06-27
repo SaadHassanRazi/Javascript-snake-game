@@ -1,6 +1,7 @@
 const board = document.getElementById("game-board");
 const instructionText = document.getElementById("instruction-text");
 const logo = document.getElementById("logo");
+const score = document.getElementById("score");
 // Make sure the board is styled as a grid container in your CSS
 // e.g., #game-board { display: grid; grid-template-columns: repeat(20, 1fr); grid-template-rows: repeat(20, 1fr); }
 
@@ -16,6 +17,7 @@ function draw() {
   board.innerHTML = "";
   drawSnake();
   drawFood();
+  updateScore();
 }
 
 function drawSnake() {
@@ -71,6 +73,7 @@ const move = () => {
     clearInterval(gameInterval);
     gameInterval = setInterval(() => {
       move();
+      checkCollision();
       draw();
     }, gameSpeedDelay);
   } else {
@@ -90,7 +93,7 @@ const startGame = () => {
   logo.style.display = "none";
   gameInterval = setInterval(() => {
     move();
-    //checkCollision();
+    checkCollision();
     draw();
   }, gameSpeedDelay);
 };
@@ -117,6 +120,31 @@ const handleKeyPress = (event) => {
         break;
     }
   }
+};
+
+const checkCollision = () => {
+  const head = snake[0];
+  if (head.x < 1 || head.x > gridSize || head.y < 1 || head.y > gridSize) {
+    resetGame();
+  }
+  for (let i = 1; i < snake.length; i++) {
+    if (head.x === snake[i].x && head.y === snake[i].y) {
+      resetGame();
+    }
+  }
+};
+
+const resetGame = () => {
+  snake = [{ x: 10, y: 10 }];
+  food = generateFood();
+  direction = "right";
+  gameSpeedDelay = 200;
+  updateScore();
+};
+
+const updateScore = () => {
+  const currentScore = snake.length - 1;
+  score.textContent = currentScore.toString().padStart(3, "0");
 };
 
 document.addEventListener("keydown", handleKeyPress);
