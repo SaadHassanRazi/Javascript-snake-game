@@ -74,6 +74,7 @@ const move = () => {
   //   snake.pop();
   if (head.x === food.x && head.y === food.y) {
     food = generateFood();
+    increaseSpeed();
     clearInterval(gameInterval);
     gameInterval = setInterval(() => {
       move();
@@ -167,6 +168,18 @@ const updateHighScore = () => {
     highScoreText.textContent = highScore.toString().padStart(3, "0");
   }
   highScoreText.style.display = "block";
+};
+
+const increaseSpeed = () => {
+  if (gameSpeedDelay > 150) {
+    gameSpeedDelay -= 5;
+  } else if (gameSpeedDelay > 100) {
+    gameSpeedDelay -= 3;
+  } else if (gameSpeedDelay > 50) {
+    gameSpeedDelay -= 2;
+  } else if (gameSpeedDelay > 25) {
+    gameSpeedDelay -= 1;
+  }
 };
 
 document.addEventListener("keydown", handleKeyPress);
